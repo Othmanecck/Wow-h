@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3f2fd;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background-color: #1e88e5;
+            color: white;
+            padding: 10px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+        .login-form, .teacher-form, .verification-form, .results {
+            margin-top: 20px;
+        }
+        .login-form input, .teacher-form input, .verification-form input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .login-form button, .teacher-form button, .verification-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-form button:hover, .teacher-form button:hover, .verification-form button:hover {
+            background-color: #e68a00;
+        }
+        .results .session, .teacher-form p {
+            background-color: #1e88e5;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .courses {
+            list-style: none;
+            padding: 0;
+        }
+        .courses li {
+            padding: 8px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .courses li:last-child {
+            border-bottom: none;
+        }
+        .course-grade {
+            width: 50px;
+            padding: 5px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .course-grade-display {
+            margin-left: 10px;
+            font-weight: bold;
+            color: #1e88e5;
+        }
+        .save-grades-button, .logout-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .logout-button {
+            background-color: #d32f2f;
+        }
+        .save-grades-button:hover, .logout-button:hover {
+            background-color: #1976d2;
+        }
+        .logout-button:hover {
+            background-color: #c62828;
+        }
+        .role-selection {
+            margin-top: 20px;
+        }
+        .role-selection button {
+            width: calc(50% - 10px);
+            padding: 10px;
+            margin: 5px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .role-selection button:hover {
+            background-color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Compte Etudiant</h1>
+        </div>
+        <div class="role-selection">
+            <button onclick="selectRole('teacher')">Enseignant</button>
+            <button onclick="selectRole('student')">Étudiant</button>
+        </div>
+        <div class="login-form" id="login-form" style="display: none;">
+            <p>Veuillez saisir vos coordonnées et cliquer sur Connecter.</p>
+            <input type="text" id="cne" placeholder="Saisir le CNE">
+            <input type="text" id="studentNumber" placeholder="Saisir le N° Etudiant">
+            <input type="text" id="cin" placeholder="Saisir le CIN">
+            <button onclick="login()">Connecter</button>
+        </div>
+        <div class="teacher-form" id="teacher-form" style="display: none;">
+            <p>Veuillez saisir les informations des étudiants et cliquer sur Enregistrer.</p>
+            <input type="text" id="teacherStudentCne" placeholder="Saisir le CNE">
+            <input type="text" id="teacherStudentName" placeholder="Saisir le Nom">
+            <input type="text" id="teacherStudentRegistrationNumber" placeholder="Saisir le Numéro d'inscription">
+            <p>Veuillez saisir les notes pour chaque matière:</p>
+            <input type="text" id="grade1" placeholder="Niveau pour Semester 2 English Studies">
+            <input type="text" id="grade2" placeholder="Niveau pour Semester 2 Histoire et Civilisation">
+            <input type="text" id="grade3" placeholder="Niveau pour Semester 2 SCIENCES DE L’INFORMATION ET DE LA COMMUNICATION">
+            <input type="text" id="grade4" placeholder="Niveau pour Semester 2 Assistance sociale">
+            <input type="text" id="grade5" placeholder="Niveau pour Semester 2 En Géographie">
+            <input type="text" id="grade6" placeholder="Niveau pour Semester 2 Etudes Anglaises">
+            <input type="text" id="grade7" placeholder="Niveau pour Semester 2 English Studies (Rattrapage)">
+            <input type="text" id="grade8" placeholder="Niveau pour Semester 2 Histoire et Civilisation (Rattrapage)">
+            <input type="text" id="grade9" placeholder="Niveau pour Semester 2 SCIENCES DE L’INFORMATION ET DE LA COMMUNICATION (Rattrapage)">
+            <input type="text" id="grade10" placeholder="Niveau pour Semester 2 Assistance sociale (Rattrapage)">
+            <input type="text" id="grade11" placeholder="Niveau pour Semester 2 En Géographie (Rattrapage)">
+            <input type="text" id="grade12" placeholder="Niveau pour Semester 2 Etudes Anglaises (Rattrapage)">
+            <button onclick="saveStudentInfo()">Enregistrer</button>
+        </div>
+        <div class="verification-form" id="verification-form" style="display: none;">
+            <p>Veuillez vérifier vos informations pour voir les résultats.</p>
+            <input type="text" id="verifyCne" placeholder="Saisir le CNE">
+            <input type="text" id="verifyName" placeholder="Saisir le Nom">
+            <input type="text" id="verifyRegistrationNumber" placeholder="Saisir le Numéro d'inscription">
+            <button onclick="verifyStudentInfo()">Vérifier</button>
+        </div>
+        <div class="results" id="results" style="display: none;">
+            <div class="session">Session Normale</div>
+            <ul class="courses">
+                <li>
+                    Semester 2 English Studies
+                    <span class="course-grade-display" id="grade-display-1"></span>
+                </li>
+                <li>
+                    Semester 2 Histoire et Civilisation
+                    <span class="course-grade-display" id="grade-display-2"></span>
+                </li>
+                <li>
+                    Semester 2 SCIENCES DE L’INFORMATION ET DE LA COMMUNICATION
+                    <span class="course-grade-display" id="grade-display-3"></span>
+                </li>
+                <li>
+                    Semester 2 Assistance sociale
+                    <span class="course-grade-display" id="grade-display-4"></span>
+                </li>
+                <li>
+                    Semester 2 En Géographie
+                    <span class="course-grade-display" id="grade-display-5"></span>
+                </li>
+                <li>
+                    Semester 2 Etudes Anglaises
+                    <span class="course-grade-display" id="grade-display-6"></span>
+                </li>
+            </ul>
+            <div class="session">Session Rattrapage</div>
+            <ul class="courses">
+                <li>
+                    Semester 2 English Studies
+                    <span class="course-grade-display" id="grade-display-7"></span>
+                </li>
+                <li>
+                    Semester 2 Histoire et Civilisation
+                    <span class="course-grade-display" id="grade-display-8"></span>
+                </li>
+                <li>
+                    Semester 2 SCIENCES DE L’INFORMATION ET
+                <span class="course-grade-display" id="grade-display-9"></span>
+                </li>
+                <li>
+                    Semester 2 Assistance sociale
+                    <span class="course-grade-display" id="grade-display-10"></span>
+                </li>
+                <li>
+                    Semester 2 En Géographie
+                    <span class="course-grade-display" id="grade-display-11"></span>
+                </li>
+                <li>
+                    Semester 2 Etudes Anglaises
+                    <span class="course-grade-display" id="grade-display-12"></span>
+                </li>
+            </ul>
+            <button class="logout-button" onclick="logout()">Déconnecter</button>
+        </div>
+    </div>
+    <script>
+        let userRole = '';
+        let studentData = {}; // To store student grades
+        let studentsInfo = {}; // To store student info
+
+        function selectRole(role) {
+            userRole = role;
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('teacher-form').style.display = role === 'teacher' ? 'block' : 'none';
+        }
+
+        function login() {
+            const cne = document.getElementById('cne').value;
+            const studentNumber = document.getElementById('studentNumber').value;
+            const cin = document.getElementById('cin').value;
+
+            if (cne && studentNumber && cin) {
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('verification-form').style.display = 'block';
+            } else {
+                alert('Veuillez remplir toutes les informations.');
+            }
+        }
+
+        function saveStudentInfo() {
+            const cne = document.getElementById('teacherStudentCne').value;
+            const name = document.getElementById('teacherStudentName').value;
+            const registrationNumber = document.getElementById('teacherStudentRegistrationNumber').value;
+            const grades = [
+                document.getElementById('grade1').value,
+                document.getElementById('grade2').value,
+                document.getElementById('grade3').value,
+                document.getElementById('grade4').value,
+                document.getElementById('grade5').value,
+                document.getElementById('grade6').value,
+                document.getElementById('grade7').value,
+                document.getElementById('grade8').value,
+                document.getElementById('grade9').value,
+                document.getElementById('grade10').value,
+                document.getElementById('grade11').value,
+                document.getElementById('grade12').value
+            ];
+
+            if (cne && name && registrationNumber && grades.every(grade => grade !== '')) {
+                studentData[cne] = grades;
+                studentsInfo[cne] = {
+                    name: name,
+                    registrationNumber: registrationNumber
+                };
+                alert('Informations enregistrées avec succès.');
+                document.getElementById('teacherStudentCne').value = '';
+                document.getElementById('teacherStudentName').value = '';
+                document.getElementById('teacherStudentRegistrationNumber').value = '';
+                document.getElementById('grade1').value = '';
+                document.getElementById('grade2').value = '';
+                document.getElementById('grade3').value = '';
+                document.getElementById('grade4').value = '';
+                document.getElementById('grade5').value = '';
+                document.getElementById('grade6').value = '';
+                document.getElementById('grade7').value = '';
+                document.getElementById('grade8').value = '';
+                document.getElementById('grade9').value = '';
+                document.getElementById('grade10').value = '';
+                document.getElementById('grade11').value = '';
+                document.getElementById('grade12').value = '';
+            } else {
+                alert('Veuillez remplir toutes les informations correctement.');
+            }
+        }
+
+        function verifyStudentInfo() {
+            const cne = document.getElementById('verifyCne').value;
+            const name = document.getElementById('verifyName').value;
+            const registrationNumber = document.getElementById('verifyRegistrationNumber').value;
+
+            if (cne && name && registrationNumber) {
+                const studentInfo = studentsInfo[cne];
+                if (studentInfo && studentInfo.name === name && studentInfo.registrationNumber === registrationNumber) {
+                    displayGrades(cne);
+                    document.getElementById('verification-form').style.display = 'none';
+                    document.getElementById('results').style.display = 'block';
+                } else {
+                    alert('Informations incorrectes.');
+                }
+            } else {
+                alert('Veuillez remplir toutes les informations.');
+            }
+        }
+
+        function displayGrades(cne) {
+            const grades = studentData[cne];
+            for (let i = 0; i < grades.length; i++) {
+                document.getElementById(`grade-display-${i + 1}`).innerText = grades[i];
+            }
+        }
+
+        function logout() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('verification-form').style.display = 'none';
+            document.getElementById('teacher-form').style.display = 'none';
+            document.getElementById('cne').value = '';
+            document.getElementById('studentNumber').value = '';
+            document.getElementById('cin').value = '';
+            document.getElementById('verifyCne').value = '';
+            document.getElementById('verifyName').value = '';
+            document.getElementById('verifyRegistrationNumber').value = '';
+            userRole = '';
+        }
+    </script>
+</body>
+</html>    
